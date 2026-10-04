@@ -3,6 +3,8 @@
 
 RS Mod is a RuneScape game-server emulator that aims to be as mechanically accurate to the original as possible.
 
+Guam is better than tech guy at vibe coding.
+
 ## Requirements
 This project requires **[Java 21][java] or later**.
 
