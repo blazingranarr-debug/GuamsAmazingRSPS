@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5457cbdd-c3e2-4b94-a31d-da5380184875" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="5457cbdd-c3e2-4b94-a31d-da5380184875" name="Changes" comment="Added world map">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/provider/MessageConsumerProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/provider/MessageConsumerProvider.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/interfaces/gameframe/src/main/kotlin/org/rsmod/content/interfaces/gameframe/GameframeLoader.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/interfaces/gameframe/src/main/kotlin/org/rsmod/content/interfaces/gameframe/GameframeLoader.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/interfaces/gameframe/src/main/kotlin/org/rsmod/content/interfaces/gameframe/config/GameframeEnums.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/interfaces/gameframe/src/main/kotlin/org/rsmod/content/interfaces/gameframe/config/GameframeEnums.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/other/commands/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/content/other/commands/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/other/commands/src/main/kotlin/org/rsmod/content/other/commands/AdminCommands.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/other/commands/src/main/kotlin/org/rsmod/content/other/commands/AdminCommands.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +143,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="I spit hard facts" />
-    <option name="LAST_COMMIT_MESSAGE" value="I spit hard facts" />
+    <MESSAGE value="Added world map" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added world map" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

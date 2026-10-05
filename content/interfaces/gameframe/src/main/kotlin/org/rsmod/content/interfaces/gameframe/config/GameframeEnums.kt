@@ -15,6 +15,7 @@ object GameframeEnums : EnumReferences() {
     val toplevel = find<EnumComp, EnumComp>("fixed_pane_redirect", 4205535)
     val toplevel_osrs_stretch = find<EnumComp, EnumComp>("resizable_basic_pane_redirect", 4209256)
     val toplevel_pre_eoc = find<EnumComp, EnumComp>("side_panels_resizable_pane_redirect", 4212977)
+    val toplevel_display = find<EnumComp, EnumComp>("fullscreen_pane_redirect")
 
     val list = find<Int, DbRowType>("gameframe_dbrows")
     val move_events = find<ComponentType, ComponentType>("toplevel_move_events")

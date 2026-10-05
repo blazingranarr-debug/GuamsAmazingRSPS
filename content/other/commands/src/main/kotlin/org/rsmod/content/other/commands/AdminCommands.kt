@@ -5,7 +5,6 @@ import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
-import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
@@ -20,8 +19,8 @@ import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.type.symbols.name.NameMapping
-import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.api.utils.system.SafeServiceExit
+import org.rsmod.content.interfaces.gameframe.worldmap.FullscreenWorldMap
 import org.rsmod.game.GameUpdate
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
@@ -35,7 +34,6 @@ import org.rsmod.game.loc.LocShape
 import org.rsmod.game.stat.PlayerSkillXPTable
 import org.rsmod.game.type.loc.LocTypeList
 import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.obj.ObjTypeList
 import org.rsmod.game.type.seq.SeqTypeList
 import org.rsmod.game.type.spot.SpotanimTypeList
 import org.rsmod.game.type.stat.StatType
@@ -47,23 +45,22 @@ import org.rsmod.map.square.MapSquareGrid
 import org.rsmod.map.square.MapSquareKey
 import org.rsmod.map.zone.ZoneGrid
 import org.rsmod.map.zone.ZoneKey
-import org.rsmod.objtx.TransactionResult
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.loc.LocLayerConstants
-import org.simmetrics.metrics.StringMetrics
 
 class AdminCommands
 @Inject
 constructor(
     private val protectedAccess: ProtectedAccessLauncher,
     private val playerList: PlayerList,
+    private val tools: AdminTools,
+    private val fullscreenWorldMap: FullscreenWorldMap,
     private val statTypes: StatTypeList,
     private val seqTypes: SeqTypeList,
     private val spotTypes: SpotanimTypeList,
     private val locTypes: LocTypeList,
     private val npcTypes: NpcTypeList,
-    private val objTypes: ObjTypeList,
     private val varpTypes: VarpTypeList,
     private val varBitTypes: VarBitTypeList,
     private val locRepo: LocRepository,
@@ -72,8 +69,6 @@ constructor(
     private val update: GameUpdate,
 ) : PluginScript() {
     private val logger = InlineLogger()
-
-    private val levenshteinMetric = StringMetrics.levenshtein()
 
     override fun ScriptContext.startup() {
         onCommand("master", "Max out all stats", ::master)
@@ -97,6 +92,29 @@ constructor(
             invalidArgs = "Use as ::npcadd duration npcDebugNameOrId (ex: 100 prison_pete)"
         }
         onCommand("invadd", "Spawn obj into inv", ::invAdd)
+        onCommand("item", "Spawn obj into inv", ::invAdd) {
+            invalidArgs = "Use as ::item objDebugNameOrId [count] (ex: ::item coins 1000)"
+        }
+        onCommand("findnpc", "List where an npc can be found", ::findNpc) {
+            invalidArgs = "Use as ::findnpc npcNameOrId (ex: ::findnpc hans)"
+        }
+        onCommand("telenpc", "Teleport to an npc", ::teleNpc) {
+            invalidArgs = "Use as ::telenpc npcNameOrId [index] (ex: ::telenpc man 2)"
+        }
+        onCommand("npc", "Spawn a permanent npc", ::npcSpawn) {
+            invalidArgs = "Use as ::npc npcDebugNameOrId (ex: ::npc goblin)"
+        }
+        onCommand("delnpc", "Delete the nearest npc", ::npcDelete) {
+            invalidArgs = "Use as ::delnpc [radius] (ex: ::delnpc 3)"
+        }
+        onCommand("loc", "Spawn a permanent loc", ::locSpawn) {
+            invalidArgs = "Use as ::loc locDebugNameOrId [angle] [shape] (ex: ::loc bookcase)"
+        }
+        onCommand("delloc", "Delete the nearest loc", ::locDelete) {
+            invalidArgs = "Use as ::delloc [radius] (ex: ::delloc 1)"
+        }
+        onCommand("adminwand", "Spawn the admin wand into inv", ::adminWand)
+        onCommand("worldmap", "Open the fullscreen teleport world map", ::worldMap)
         onCommand("invclear", "Remove all objs from inv", ::invClear)
         onCommand("varp", "Set varp value", ::setVarp) {
             invalidArgs = "Use as ::varp debugNameOrId value (ex: option_run 1)"
@@ -255,30 +273,48 @@ constructor(
     private fun invAdd(cheat: Cheat) =
         with(cheat) {
             val (typeName, countArg) = args.asTypeNameAndNumber(defaultNumber = 1)
-            val normalizedName = typeName.replace("cert_", "")
-            val resolvedName = resolveTypeName(normalizedName, names.objs)
-            val typeId = resolveArgTypeId(resolvedName, names.objs)
-            if (typeId == null) {
-                player.mes("There is no obj mapped to name: '$resolvedName'")
-                return
-            }
-            val type = objTypes[typeId]
-            if (type == null) {
-                player.mes("That obj does not exist: $typeId")
-                return
-            }
-            val spawnCert = typeName.startsWith("cert_")
-            val resolvedType =
-                if (spawnCert && type.canCert) objTypes.getValue(type.certlink) else type
             val count = countArg.toLong().coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
-            val objName = type.internalName ?: type.name
-            val spawned = player.invAdd(player.inv, resolvedType, count, strict = false)
-            if (spawned.err is TransactionResult.RestrictedDummyitem) {
-                player.mes("You can't spawn this item!")
-                return
-            }
-            player.mes("Spawned inv obj `$objName` x ${spawned.completed().formatAmount}")
+            tools.spawnItem(player, typeName, count)
         }
+
+    private fun findNpc(cheat: Cheat) = with(cheat) { tools.listNpcs(player, args.asTypeName()) }
+
+    private fun teleNpc(cheat: Cheat) {
+        with(cheat) {
+            val hasIndex = args.size > 1 && args.last().toIntOrNull() != null
+            val query = (if (hasIndex) args.dropLast(1) else args).asTypeName()
+            val index = if (hasIndex) args.last().toInt() else 1
+            val coords = tools.resolveNpcTeleport(player, query, index) ?: return
+            protectedAccess.launch(player) { telejump(coords) }
+        }
+    }
+
+    private fun npcSpawn(cheat: Cheat) = with(cheat) { tools.spawnNpc(player, args.asTypeName()) }
+
+    private fun npcDelete(cheat: Cheat) =
+        with(cheat) {
+            val radius = args.getOrNull(0)?.toIntOrNull() ?: AdminTools.DEFAULT_DELETE_RADIUS
+            tools.deleteNearestNpc(player, radius)
+        }
+
+    private fun locSpawn(cheat: Cheat) =
+        with(cheat) {
+            val trailingNumbers = args.drop(1).takeLastWhile { it.toIntOrNull() != null }.take(2)
+            val nameArgs = args.dropLast(trailingNumbers.size)
+            val angle = trailingNumbers.getOrNull(0)?.toInt() ?: LocAngle.West.id
+            val shape = trailingNumbers.getOrNull(1)?.toInt() ?: LocShape.CentrepieceStraight.id
+            tools.spawnLoc(player, nameArgs.asTypeName(), angle, shape)
+        }
+
+    private fun locDelete(cheat: Cheat) =
+        with(cheat) {
+            val radius = args.getOrNull(0)?.toIntOrNull() ?: AdminTools.DEFAULT_DELETE_RADIUS
+            tools.deleteNearestLoc(player, radius)
+        }
+
+    private fun adminWand(cheat: Cheat) = with(cheat) { tools.spawnAdminWand(player) }
+
+    private fun worldMap(cheat: Cheat) = with(cheat) { fullscreenWorldMap.open(player) }
 
     private fun invClear(cheat: Cheat) = with(cheat) { player.invClear(player.inv) }
 
@@ -367,22 +403,6 @@ constructor(
             }
         }
 
-    private fun resolveArgTypeId(arg: String, names: Map<String, Int>): Int? {
-        val argAsInt = arg.toIntOrNull()
-        if (argAsInt != null) {
-            return argAsInt
-        }
-        val sanitized = arg.replace("-", "_")
-        return names[sanitized]
-    }
-
-    private fun resolveTypeName(name: String, names: Map<String, Int>): String =
-        when {
-            name in names -> name
-            name.toIntOrNull() != null -> name
-            else -> findClosestNameMatch(name, names.keys) ?: name
-        }
-
     private fun List<String>.asTypeNameAndNumber(defaultNumber: Number): Pair<String, String> =
         if (size > 1 && last().toLongOrNull() != null) {
             dropLast(1).joinToString("_") to last()
@@ -391,20 +411,4 @@ constructor(
         }
 
     private fun List<String>.asTypeName(): String = joinToString("_")
-
-    private fun findClosestNameMatch(input: String, names: Iterable<String>): String? {
-        val normalizedInput = input.replace("_", " ")
-
-        var bestMatchScore = 0.0f
-        var bestMatchName: String? = null
-        for (name in names) {
-            val score = levenshteinMetric.compare(normalizedInput, name.replace("_", " "))
-            if (score > bestMatchScore) {
-                bestMatchScore = score
-                bestMatchName = name
-            }
-        }
-
-        return if (bestMatchScore >= 0.5) bestMatchName else null
-    }
 }

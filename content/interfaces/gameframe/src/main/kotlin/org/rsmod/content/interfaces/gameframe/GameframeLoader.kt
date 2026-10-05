@@ -7,6 +7,7 @@ import org.rsmod.game.dbtable.DbRow
 import org.rsmod.game.dbtable.DbRowResolver
 import org.rsmod.game.enums.EnumTypeMapResolver
 import org.rsmod.game.type.comp.ComponentType
+import org.rsmod.game.type.interf.InterfaceType
 import org.rsmod.game.ui.Component
 
 internal class GameframeLoader
@@ -58,6 +59,28 @@ constructor(private val rows: DbRowResolver, private val enums: EnumTypeMapResol
             resizable = resizable,
             isDefault = isDefault,
             stoneArrangement = stoneArrangement,
+        )
+    }
+
+    /**
+     * The fullscreen (`toplevel_display`) layout is not a selectable gameframe, so it is not part
+     * of the `gameframe_dbrows` list. It is only used temporarily, e.g. by the fullscreen world
+     * map.
+     */
+    fun loadFullscreen(topLevel: InterfaceType): Gameframe {
+        val mappings = linkedMapOf<Component, Component>()
+        val mappingRedirects = enums[gameframe_enums.toplevel_display].filterValuesNotNull()
+        for ((base, translated) in mappingRedirects) {
+            mappings[Component(base.packed)] = Component(translated.packed)
+        }
+        return Gameframe(
+            topLevel = topLevel,
+            overlays = emptyList(),
+            mappings = mappings,
+            clientMode = -1,
+            resizable = true,
+            isDefault = false,
+            stoneArrangement = false,
         )
     }
 

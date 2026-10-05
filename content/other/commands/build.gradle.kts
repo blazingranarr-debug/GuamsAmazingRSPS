@@ -8,6 +8,7 @@ dependencies {
     implementation(projects.api.db)
     implementation(projects.api.dbGateway)
     implementation(projects.api.pluginCommons)
+    implementation(projects.content.interfaces.gameframe)
     implementation(projects.api.realm)
     implementation(projects.api.realmConfig)
     implementation(projects.api.type.typeSymbols)
