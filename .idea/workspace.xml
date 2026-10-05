@@ -4,13 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5457cbdd-c3e2-4b94-a31d-da5380184875" name="Changes" comment="Added world map">
+    <list default="true" id="5457cbdd-c3e2-4b94-a31d-da5380184875" name="Changes" comment="Added admin tool">
+      <change beforePath="$PROJECT_DIR$/.data/symbols/loc.sym" beforeDir="false" afterPath="$PROJECT_DIR$/.data/symbols/loc.sym" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.data/symbols/obj.sym" beforeDir="false" afterPath="$PROJECT_DIR$/.data/symbols/obj.sym" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/provider/MessageConsumerProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/provider/MessageConsumerProvider.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/interfaces/gameframe/src/main/kotlin/org/rsmod/content/interfaces/gameframe/GameframeLoader.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/interfaces/gameframe/src/main/kotlin/org/rsmod/content/interfaces/gameframe/GameframeLoader.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/interfaces/gameframe/src/main/kotlin/org/rsmod/content/interfaces/gameframe/config/GameframeEnums.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/interfaces/gameframe/src/main/kotlin/org/rsmod/content/interfaces/gameframe/config/GameframeEnums.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/cache/src/main/kotlin/org/rsmod/api/cache/types/comp/ComponentTypeEncoder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/cache/src/main/kotlin/org/rsmod/api/cache/types/comp/ComponentTypeEncoder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/death/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/api/death/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/death/src/main/kotlin/org/rsmod/api/death/NpcDeath.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/death/src/main/kotlin/org/rsmod/api/death/NpcDeath.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/death/src/main/kotlin/org/rsmod/api/death/PlayerDeath.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/death/src/main/kotlin/org/rsmod/api/death/PlayerDeath.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/npc/src/main/kotlin/org/rsmod/api/npc/headbar/InternalNpcHeadbars.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/npc/src/main/kotlin/org/rsmod/api/npc/headbar/InternalNpcHeadbars.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/player/src/main/kotlin/org/rsmod/api/player/headbar/InternalPlayerHeadbars.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/player/src/main/kotlin/org/rsmod/api/player/headbar/InternalPlayerHeadbars.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/player/src/main/kotlin/org/rsmod/api/player/hit/processor/DamageOnlyPlayerHitProcessor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/player/src/main/kotlin/org/rsmod/api/player/hit/processor/DamageOnlyPlayerHitProcessor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/player/src/main/kotlin/org/rsmod/api/player/hit/processor/StandardPlayerHitProcessor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/player/src/main/kotlin/org/rsmod/api/player/hit/processor/StandardPlayerHitProcessor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/registry/src/main/kotlin/org/rsmod/api/registry/region/RegionRegistry.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/registry/src/main/kotlin/org/rsmod/api/registry/region/RegionRegistry.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/type/type-builders/src/main/kotlin/org/rsmod/api/type/builders/resolver/TypeBuilderResolverMap.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/type/type-builders/src/main/kotlin/org/rsmod/api/type/builders/resolver/TypeBuilderResolverMap.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/type/type-script-dsl/src/main/kotlin/org/rsmod/api/type/script/dsl/LocPluginBuilder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/type/type-script-dsl/src/main/kotlin/org/rsmod/api/type/script/dsl/LocPluginBuilder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/type/type-updater/src/main/kotlin/org/rsmod/api/type/updater/TypeUpdaterConfigs.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/type/type-updater/src/main/kotlin/org/rsmod/api/type/updater/TypeUpdaterConfigs.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/content/other/commands/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/content/other/commands/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/content/other/commands/src/main/kotlin/org/rsmod/content/other/commands/AdminCommands.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/other/commands/src/main/kotlin/org/rsmod/content/other/commands/AdminCommands.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/entity/Player.kt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/entity/Player.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/region/Region.kt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/region/Region.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,7 +157,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="I spit hard facts" />
     <MESSAGE value="Added world map" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added world map" />
+    <MESSAGE value="Added admin tool" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added admin tool" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

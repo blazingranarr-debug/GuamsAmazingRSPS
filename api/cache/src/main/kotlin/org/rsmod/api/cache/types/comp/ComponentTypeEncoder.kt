@@ -1,10 +1,45 @@
 package org.rsmod.api.cache.types.comp
 
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.PooledByteBufAllocator
 import org.openrs2.buffer.writeString
+import org.openrs2.cache.Cache
+import org.rsmod.api.cache.Js5Archives
 import org.rsmod.game.type.comp.UnpackedComponentType
 
 public object ComponentTypeEncoder {
+    /**
+     * Writes [types] to the interfaces archive. Each component is stored in group `id shr 16` (its
+     * interface) and file `id and 0xFFFF` (its index within the interface).
+     */
+    public fun encodeAll(
+        cache: Cache,
+        types: Iterable<UnpackedComponentType>,
+    ): List<UnpackedComponentType> {
+        val buffer = PooledByteBufAllocator.DEFAULT.buffer()
+        val archive = Js5Archives.INTERFACES
+        val packed = mutableListOf<UnpackedComponentType>()
+        for (type in types) {
+            val group = type.id shr 16
+            val file = type.id and 0xFFFF
+            val oldBuf =
+                if (cache.exists(archive, group, file)) {
+                    cache.read(archive, group, file)
+                } else {
+                    null
+                }
+            buffer.clear()
+            encode(type, buffer)
+            if (buffer != oldBuf) {
+                cache.write(archive, group, file, buffer)
+                packed += type
+            }
+            oldBuf?.release()
+        }
+        buffer.release()
+        return packed
+    }
+
     public fun encode(type: UnpackedComponentType, data: ByteBuf) {
         if (type.v3) {
             encodeV3(type, data)

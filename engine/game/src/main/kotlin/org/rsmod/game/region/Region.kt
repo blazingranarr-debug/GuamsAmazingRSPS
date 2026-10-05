@@ -14,6 +14,12 @@ public data class Region(
     public val uid: Int,
     public var slot: Int,
 ) {
+    /**
+     * When `true`, this region is never removed by the automatic inactive-region cleanup and must
+     * be explicitly unregistered.
+     */
+    public var persistent: Boolean = false
+
     private var remappedLocCoords: RemappedRegionLocMap? = null
     private val normalZones: NormalRegionZoneMap = NormalRegionZoneMap()
 

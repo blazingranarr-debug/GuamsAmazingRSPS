@@ -35,7 +35,7 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
 
         // TODO(combat): Process degradation, ring of recoil, retribution, etc.
 
-        val damage = min(player.hitpoints, hit.damage)
+        val damage = if (player.invulnerable) 0 else min(player.hitpoints, hit.damage)
         if (damage > 0) {
             statSub(stats.hitpoints, constant = damage, percent = 0)
         }

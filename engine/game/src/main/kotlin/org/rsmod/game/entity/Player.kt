@@ -254,6 +254,12 @@ public class Player(
 
     public var lootDropDuration: Int? = null
 
+    /**
+     * When `true`, hits deal no damage and death is prevented (used by admin godmode). This is a
+     * session-only flag and is not saved.
+     */
+    public var invulnerable: Boolean = false
+
     public val appearance: Appearance = Appearance()
     public var bas: UnpackedBasType? by appearance::bas
     public var transmog: UnpackedNpcType? by appearance::transmog

@@ -118,14 +118,14 @@ constructor(
     }
 
     public fun removeInactiveSmallRegions() {
-        val filtered = smallRegions.filter(::isEmpty)
+        val filtered = smallRegions.filter { isEmpty(it) && !it.persistent }
         for (region in filtered) {
             unregisterSmall(region)
         }
     }
 
     public fun removeInactiveLargeRegions() {
-        val filtered = largeRegions.filter(::isEmpty)
+        val filtered = largeRegions.filter { isEmpty(it) && !it.persistent }
         for (region in filtered) {
             unregisterLarge(region)
         }

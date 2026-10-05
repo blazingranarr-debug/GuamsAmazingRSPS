@@ -98,6 +98,10 @@ internal object InternalNpcHeadbars {
     }
 
     private fun calculateFill(segments: Int, currHp: Int, maxHp: Int): Int {
-        return (currHp * segments) / maxHp
+        // Hitpoints boosted above the max level (e.g. anglerfish, admin godmode) show a full bar.
+        if (maxHp <= 0) {
+            return 0
+        }
+        return ((currHp * segments) / maxHp).coerceIn(0, segments)
     }
 }

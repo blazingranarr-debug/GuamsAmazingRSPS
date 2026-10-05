@@ -21,6 +21,11 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.type.symbols.name.NameMapping
 import org.rsmod.api.utils.system.SafeServiceExit
 import org.rsmod.content.interfaces.gameframe.worldmap.FullscreenWorldMap
+import org.rsmod.content.other.commands.godmode.AdminGodMode
+import org.rsmod.content.other.commands.godmode.toggleGodMode
+import org.rsmod.content.other.commands.instance.AdminInstances
+import org.rsmod.content.other.commands.portal.AdminPortals
+import org.rsmod.content.other.commands.ui.AdminToolUi
 import org.rsmod.game.GameUpdate
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
@@ -51,11 +56,15 @@ import org.rsmod.routefinder.loc.LocLayerConstants
 
 class AdminCommands
 @Inject
-constructor(
+internal constructor(
     private val protectedAccess: ProtectedAccessLauncher,
     private val playerList: PlayerList,
     private val tools: AdminTools,
     private val fullscreenWorldMap: FullscreenWorldMap,
+    private val instances: AdminInstances,
+    private val portals: AdminPortals,
+    private val godModes: AdminGodMode,
+    private val adminToolUi: AdminToolUi,
     private val statTypes: StatTypeList,
     private val seqTypes: SeqTypeList,
     private val spotTypes: SpotanimTypeList,
@@ -115,6 +124,9 @@ constructor(
         }
         onCommand("adminwand", "Spawn the admin wand into inv", ::adminWand)
         onCommand("worldmap", "Open the fullscreen teleport world map", ::worldMap)
+        onCommand("instances", "List admin instances", ::listInstances)
+        onCommand("godmode", "Toggle godmode (unkillable, 99 stats)", ::godMode)
+        onCommand("admintool", "Open the admin tool window", ::adminTool)
         onCommand("invclear", "Remove all objs from inv", ::invClear)
         onCommand("varp", "Set varp value", ::setVarp) {
             invalidArgs = "Use as ::varp debugNameOrId value (ex: option_run 1)"
@@ -315,6 +327,32 @@ constructor(
     private fun adminWand(cheat: Cheat) = with(cheat) { tools.spawnAdminWand(player) }
 
     private fun worldMap(cheat: Cheat) = with(cheat) { fullscreenWorldMap.open(player) }
+
+    private fun godMode(cheat: Cheat) = with(cheat) { toggleGodMode(player, godModes) }
+
+    private fun adminTool(cheat: Cheat) {
+        protectedAccess.launch(cheat.player) { with(adminToolUi) { open() } }
+    }
+
+    private fun listInstances(cheat: Cheat) =
+        with(cheat) {
+            val all = instances.all
+            if (all.isEmpty()) {
+                player.mes("There are no admin instances.")
+                return
+            }
+            player.mes("Admin instances (${all.size}):")
+            for (instance in all) {
+                val record = instance.record
+                player.mes(
+                    "  #${record.id} '${record.name}' by ${record.createdBy}: " +
+                        "${record.npcs.size} npc(s), ${record.locs.size} object(s), " +
+                        "${record.deletedLocs.size} removed, " +
+                        "${portals.all.count { it.record.destinationInstanceId == record.id }} " +
+                        "portal(s) leading here"
+                )
+            }
+        }
 
     private fun invClear(cheat: Cheat) = with(cheat) { player.invClear(player.inv) }
 

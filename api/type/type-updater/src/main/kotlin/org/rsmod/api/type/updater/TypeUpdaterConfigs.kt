@@ -9,6 +9,7 @@ import org.rsmod.annotations.GameCache
 import org.rsmod.annotations.Js5Cache
 import org.rsmod.api.cache.types.TypeListMapDecoder
 import org.rsmod.api.cache.types.area.AreaTypeEncoder
+import org.rsmod.api.cache.types.comp.ComponentTypeEncoder
 import org.rsmod.api.cache.types.dbrow.DbRowTypeEncoder
 import org.rsmod.api.cache.types.dbtable.DbTableTypeEncoder
 import org.rsmod.api.cache.types.enums.EnumTypeEncoder
@@ -36,6 +37,7 @@ import org.rsmod.game.type.CacheType
 import org.rsmod.game.type.TypeListMap
 import org.rsmod.game.type.area.AreaTypeBuilder
 import org.rsmod.game.type.area.UnpackedAreaType
+import org.rsmod.game.type.comp.UnpackedComponentType
 import org.rsmod.game.type.dbrow.DbRowTypeBuilder
 import org.rsmod.game.type.dbrow.UnpackedDbRowType
 import org.rsmod.game.type.dbtable.DbTableTypeBuilder
@@ -236,6 +238,8 @@ constructor(
             dbRows = dbRows,
             dbTables = dbTables,
             modLevels = modLevels,
+            // Components are only ever built (never edited or merged with vanilla types).
+            components = build.components,
         )
     }
 
@@ -260,6 +264,7 @@ constructor(
         val dbRows: List<UnpackedDbRowType>,
         val dbTables: List<UnpackedDbTableType>,
         val modLevels: List<UnpackedModLevelType>,
+        val components: List<UnpackedComponentType>,
     )
 
     private fun List<*>.toUpdateMap(): UpdateMap {
@@ -283,6 +288,7 @@ constructor(
         val dbRows = filterIsInstance<UnpackedDbRowType>()
         val dbTables = filterIsInstance<UnpackedDbTableType>()
         val modLevels = filterIsInstance<UnpackedModLevelType>()
+        val components = filterIsInstance<UnpackedComponentType>()
 
         return UpdateMap(
             invs = invs,
@@ -305,6 +311,7 @@ constructor(
             dbRows = dbRows,
             dbTables = dbTables,
             modLevels = modLevels,
+            components = components,
         )
     }
 
@@ -348,6 +355,7 @@ constructor(
             DbRowTypeEncoder.encodeAll(cache, updates.dbRows, ctx)
             HuntModeTypeEncoder.encodeAll(cache, updates.hunt, ctx)
             ModLevelTypeEncoder.encodeAll(cache, updates.modLevels, ctx)
+            ComponentTypeEncoder.encodeAll(cache, updates.components)
         }
     }
 }

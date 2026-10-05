@@ -14,6 +14,7 @@ import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.player.vars.typeNpcUidVarp
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
@@ -29,6 +30,7 @@ constructor(
     private val seqTypes: SeqTypeList,
     private val players: PlayerList,
     private val objRepo: ObjRepository,
+    private val eventBus: EventBus,
 ) {
     public suspend fun deathNoDrops(access: StandardNpcAccess) {
         access.death(npcRepo, seqTypes, players)
@@ -45,6 +47,11 @@ constructor(
     private fun Npc.spawnDeathDrops(dropCoords: CoordGrid) {
         // TODO: Drop tables.
         val hero = findHero(players)
+        val event = NpcDeathDrops(this, hero, dropCoords)
+        eventBus.publish(event)
+        if (event.handled) {
+            return
+        }
         if (hero != null) {
             val duration = hero.lootDropDuration ?: constants.lootdrop_duration
             objRepo.add(objs.bones, dropCoords, duration, hero)

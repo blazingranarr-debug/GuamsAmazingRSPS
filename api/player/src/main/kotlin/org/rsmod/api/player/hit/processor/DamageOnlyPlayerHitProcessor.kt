@@ -15,7 +15,7 @@ import org.rsmod.game.hit.Hit
 
 public class DamageOnlyPlayerHitProcessor : InstantPlayerHitProcessor {
     override fun Player.process(hit: Hit) {
-        val damage = min(hitpoints, hit.damage)
+        val damage = if (invulnerable) 0 else min(hitpoints, hit.damage)
         if (damage > 0) {
             statSub(stats.hitpoints, constant = damage, percent = 0)
         }

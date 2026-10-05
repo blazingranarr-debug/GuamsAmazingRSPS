@@ -7,6 +7,7 @@ import org.rsmod.api.config.refs.jingles
 import org.rsmod.api.config.refs.midis
 import org.rsmod.api.config.refs.queues
 import org.rsmod.api.config.refs.seqs
+import org.rsmod.api.config.refs.stats
 import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
@@ -21,6 +22,12 @@ public class PlayerDeath @Inject constructor(private val statTypes: StatTypeList
     private var Player.specialAttackType by intVarp(varps.sa_attack)
 
     public suspend fun death(access: ProtectedAccess) {
+        if (access.player.invulnerable) {
+            // Safety net for damage sources that bypass the hit processors.
+            access.clearQueue(queues.death)
+            access.statHeal(stats.hitpoints, constant = 0, percent = 100)
+            return
+        }
         access.deathSequence()
     }
 

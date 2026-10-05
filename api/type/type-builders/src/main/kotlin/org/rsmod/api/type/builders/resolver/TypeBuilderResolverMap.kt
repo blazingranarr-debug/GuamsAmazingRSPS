@@ -6,6 +6,8 @@ import org.rsmod.api.type.builders.area.AreaBuilder
 import org.rsmod.api.type.builders.area.AreaBuilderResolver
 import org.rsmod.api.type.builders.bas.BasBuilder
 import org.rsmod.api.type.builders.bas.BasBuilderResolver
+import org.rsmod.api.type.builders.comp.ComponentBuilder
+import org.rsmod.api.type.builders.comp.ComponentBuilderResolver
 import org.rsmod.api.type.builders.controller.ControllerBuilder
 import org.rsmod.api.type.builders.controller.ControllerBuilderResolver
 import org.rsmod.api.type.builders.dbrow.DbRowBuilder
@@ -64,6 +66,7 @@ public class TypeBuilderResolverMap
 constructor(
     private val areaResolver: AreaBuilderResolver,
     private val basResolver: BasBuilderResolver,
+    private val componentResolver: ComponentBuilderResolver,
     private val conResolver: ControllerBuilderResolver,
     private val dbRowResolver: DbRowBuilderResolver,
     private val dbTableResolver: DbTableBuilderResolver,
@@ -161,6 +164,7 @@ constructor(
             when (this) {
                 is AreaBuilder -> areaResolver
                 is BasBuilder -> basResolver
+                is ComponentBuilder -> componentResolver
                 is ControllerBuilder -> conResolver
                 is DbRowBuilder -> dbRowResolver
                 is DbTableBuilder -> dbTableResolver

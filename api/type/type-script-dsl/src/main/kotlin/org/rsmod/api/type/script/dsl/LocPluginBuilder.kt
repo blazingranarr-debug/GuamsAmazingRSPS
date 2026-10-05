@@ -19,7 +19,7 @@ public class LocPluginBuilder(public var internal: String? = null) {
     private val backing: LocTypeBuilder = LocTypeBuilder()
 
     // TODO: Change to wrapper class with ModelType and LocShape.
-    private var models: CompactableIntArray by backing::model
+    public var models: CompactableIntArray by backing::model
     private var shapes: CompactableIntArray by backing::modelShape
     public var name: String? by backing::name
     public var desc: String? by backing::desc
